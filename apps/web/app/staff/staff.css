@@ -2,3 +2,17 @@
 @media(max-width:900px){.staff-layout{grid-template-columns:1fr}.staff-tabs{position:static;flex-direction:row;overflow:auto;gap:6px}.staff-tabs button{white-space:nowrap;flex-shrink:0}.staff-heading{gap:12px}.staff-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:600px){.staff-heading{flex-direction:column}.staff-heading h1{font-size:29px}.staff-card{padding:20px 16px}.staff-grid{grid-template-columns:1fr;gap:16px}.staff-metrics{gap:10px}.staff-metric{padding:16px}.staff-metric strong{font-size:25px}.staff-row{align-items:flex-start;flex-direction:column;gap:10px}.staff-inline-field{grid-template-columns:1fr}.staff-inline-field button[type=submit]{width:100%;max-width:none}.staff-card button[type=submit]{max-width:none}.staff-header-line{align-items:flex-start;flex-wrap:wrap}.staff-table th,.staff-table td{padding:11px}.staff-tabs{margin:0 -4px;padding:9px}.staff-actions button,.staff-actions a{flex-grow:1;text-align:center}}
 
 .staff-camera{padding:16px;border:1px solid #dce6e8;border-radius:9px;margin:18px 0}.staff-camera .staff-actions{margin-top:0}.staff-camera video{width:100%;max-width:520px;max-height:360px;object-fit:cover;border-radius:8px;background:#102c42;margin-top:14px}.staff-camera video[hidden]{display:none}
+/* Staff views share the supplied PDF's dark surface and accent roles. */
+.staff-card,.staff-tabs,.staff-metric{background:var(--panel);border-color:var(--border);color:var(--text)}
+.staff-badge,.staff-success{background:var(--advisory);border-color:#17745e;color:#75f4d2}
+.staff-tabs button{color:var(--text-secondary)}
+.staff-tabs button[aria-current=page],.staff-current{background:#103653;border-color:var(--cyan);color:#75dfff}
+.staff-card textarea{background:var(--input);border-color:var(--border);color:var(--text)}
+.staff-row,.staff-table-wrap,.staff-queue-row,.staff-form-divider,.staff-camera{border-color:var(--border)}
+.staff-table th{background:var(--surface-deep);color:var(--text-secondary)}
+.staff-table th,.staff-table td{border-color:var(--border)}
+.staff-notice{background:#30280f;border-color:#d4a044;color:#ffe5a3}
+.staff-danger{background:#9f294b!important;color:#fff}
+.staff-required{color:#ffbdc7}
+.staff-camera video{background:var(--input)}
+.staff-console .staff-secondary{background:#103653!important;color:#73dfff!important;border-color:#247da3!important}

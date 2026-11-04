@@ -1,0 +1,153 @@
+/* Color roles sampled from the supplied Figma PDF. */
+:root {
+ color-scheme: dark;
+ --navy: #071426;
+ --teal: #11c89c;
+ --muted: #a0b0c8;
+ --text: #f2f7fc;
+ --text-secondary: #d7e3f1;
+ --page-blue: #2563ba;
+ --panel: #17253a;
+ --surface: #101d31;
+ --surface-deep: #0b182a;
+ --input: #08172a;
+ --border: #24344a;
+ --cyan: #20b9e8;
+ --action-blue: #0b4f8a;
+ --action-text: #071426;
+ --advisory: #063e37;
+ --footer: #08345b;
+}
+body { background: var(--footer); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+body > header, body > .advisory, body > footer { flex-shrink: 0; }
+main { flex: 1; }
+main { background: linear-gradient(180deg, #071426 0%, #2563ba 74%, #2563ba 100%); }
+header { background: var(--panel); border-color: var(--border); }
+.brand { color: var(--text); }
+.brand small { color: var(--cyan); }
+header nav { gap: 8px; align-items: center; }
+header nav a { color: var(--muted); border-radius: 7px; padding: 10px 12px; }
+header nav a:hover { color: var(--text); background: #103653; }
+header nav a[aria-current="page"] { color: #9aefff; background: #1c4c8f; }
+header nav a.nav-account { background: var(--advisory); color: #40e6c1; border-radius: 24px; }
+header nav a.nav-account[aria-current="page"] { box-shadow: inset 0 0 0 1px #11c89c; }
+.advisory { background: var(--advisory); color: var(--text); border: 0; }
+.advisory strong { color: #4ff1cf; }
+footer { background: var(--footer); color: var(--text); }
+footer p { color: var(--text-secondary); }
+p, .ticket-details dt { color: var(--muted); }
+a, .eyebrow, .hold-clock, .reschedule-form summary { color: var(--cyan); }
+button, .button { background: var(--teal); color: var(--action-text); }
+button:hover:not(:disabled), .button:hover { filter: brightness(1.08); }
+.text-button { background: transparent; color: var(--cyan); }
+.secondary-button, .staff-secondary, .staff-download {
+ background: #103653 !important; border-color: #247da3 !important; color: #73dfff !important;
+}
+.card, .passenger-panel, .selection-summary, .boarding-modal {
+ background: var(--panel); color: var(--text); border-color: var(--border); box-shadow: 0 12px 35px #02081730;
+}
+.card form { background: #103653; border: 1px solid #7296ad; border-radius: 12px; padding: 24px; margin-top: 24px; }
+.card button[type="submit"] { background: var(--action-blue); color: var(--text); }
+label, legend, .ticket-details dd { color: var(--text); }
+input:not([type="checkbox"]):not([type="radio"]), select, textarea {
+ background: var(--input); border-color: var(--border); color: var(--text); color-scheme: dark;
+}
+input::placeholder, textarea::placeholder { color: #a0b0c8; opacity: 1; }
+input[type="checkbox"], input[type="radio"] { accent-color: var(--teal); }
+.card input:not([type="checkbox"]):not([type="radio"]), .card select {
+ color-scheme: light; background: #fff; color: #17253a; border-color: #d8e1ea;
+}
+.card input::placeholder { color: #526a8b; }
+.status { background: #063e37; color: #d7fff1; border: 1px solid #17745e; }
+.status p { color: inherit; }
+.error, .status.error { background: #351c2b; color: #ffbdc7; border-color: #9f3652; }
+.date-tab, .booking-tabs button { background: var(--panel); border-color: var(--border); color: var(--text-secondary); }
+.date-tab.active, .booking-tabs button.active {
+ background: #103653; border-color: var(--cyan); color: #75dfff; box-shadow: inset 0 -3px var(--cyan);
+}
+.empty-sailings { background: var(--surface); border-color: #47617f; }
+.empty-icon, .loading-dot { color: var(--cyan); }
+.loading-dot { background: var(--cyan); }
+.trip-search, .sailing-card { background: var(--surface); border-color: var(--border); }
+.sailing-card-heading { border-color: var(--border); }
+.vessel-icon { background: #103653; color: var(--cyan); }
+.sailing-badge, .status-pill { background: var(--advisory); color: #46edc5; }
+.badge-alert { background: #351c2b; color: #ffbdc7; }
+.seats { background: var(--advisory); color: #46edc5; }
+.seats.urgent { background: #49360c; color: #ffdb72; }
+.seats.sold-out { background: #253247; color: #bdc9da; }
+.voyage-line, .voyage-times small, .fare-from small, .refresh-controls small,
+.sailing-inventory small, .class-price small, .search-fields small { color: var(--muted); }
+.voyage-times strong { color: var(--text); }
+.fare-from strong, .class-price strong, .price-large { color: var(--teal); }
+.class-options, .class-option + .class-option { border-color: var(--border); }
+.class-option button:disabled { background: #1a2a40; border: 1px solid #344964; color: #a0b0c8; }
+.sailing-card-note, .fare-breakdown, .voyage-summary { background: var(--surface-deep); border-color: var(--border); color: var(--text-secondary); }
+.fare-breakdown span:nth-last-child(2), .fare-breakdown strong:last-child,
+.passenger-summary-list li, .reschedule-form { border-color: var(--border); }
+.selection-summary, .payment-processing { border-color: var(--cyan); }
+.passenger-summary-list span { color: var(--muted); }
+.payment-methods label { background: var(--input); border-color: var(--border); }
+.payment-methods label:has(input:checked) { background: #103653; border-color: var(--cyan); }
+.confirmation-panel { background: #0b302e; border-color: #11c89c; }
+.mock-payment-controls { background: #30280f; border-color: #aa8131; color: #ffe5a3; }
+.mock-payment-controls p { color: #e8d8b4; }
+.seat-button { background: #17253a; border-color: #344760; color: #d7e3f1; }
+.seat-button.selected, .seat-button.selected:disabled { background: var(--action-blue); color: #fff; border-color: var(--cyan); box-shadow: 0 0 0 2px #20b9e855; }
+.seat-button:disabled { background: #08172a; border-color: #24344a; color: #8093ae; }
+.seat-button.selected:disabled { background: var(--action-blue); color: #fff; }
+.boarding-modal::backdrop { background: #020817cc; }
+.boarding-qr { background: #fff; }
+.refund-timeline li { border-color: #3c506a; color: #a0b0c8; }
+.refund-timeline li:before { background: #3c506a; }
+.refund-timeline li.complete { color: var(--text); border-color: var(--teal); }
+.refund-timeline span, .notification-card small { color: var(--muted); }
+.booking-money { color: var(--text-secondary); }
+/* The reference home page deliberately keeps its search/route cards white. */
+main:has(.travel-home) { padding: 56px 0 0; }
+.travel-home { max-width: none; }
+.travel-hero { display: block; text-align: center; max-width: 900px; margin: 24px auto 58px; padding: 0 24px; }
+.travel-hero h1 { color: #fff; max-width: 760px; margin: 20px auto; }
+.travel-hero p { color: #d7e3f1; margin-inline: auto; }
+.travel-hero .eyebrow { color: #75dfff; }
+.hero-details { justify-content: center; color: #b8f5e5; }
+.hero-seascape { display: none; }
+.travel-home > .trip-search { max-width: 1120px; width: calc(100% - 48px); margin-inline: auto; background: #fff; border-color: #d8e1ea; color: #17253a; color-scheme: light; }
+.travel-home .trip-search h2, .travel-home .trip-search label { color: #17253a; }
+.travel-home .trip-search .eyebrow { color: #0b4f8a; }
+.travel-home .trip-search input, .travel-home .trip-search select {
+ color-scheme: light; background: #fff; color: #17253a; border-color: #d8e1ea;
+}
+.travel-home .trip-search small, .travel-home .trip-search p { color: #526a8b; }
+.travel-home .trip-search button[type="submit"] { background: #0b4f8a; color: #fff; }
+.popular-routes { background: #0b1f3a; margin-top: 60px; padding: 36px 24px 60px; }
+.popular-routes > .section-heading, .popular-routes > .route-grid, .popular-routes > p, .popular-routes > .status { max-width: 1120px; margin-inline: auto; }
+.popular-routes > .section-heading h2 { color: #fff; }
+.popular-routes > .section-heading p { color: #d7e3f1; }
+.route-card { background: #fff; border-color: #d8e1ea; color: #17253a; }
+.route-card h3, .route-card-bottom strong { color: #17253a; }
+.route-card p, .route-card small { color: #526a8b; }
+.route-card a { color: #0b4f8a; }
+.route-art { background: linear-gradient(155deg, #dceefa 0%, #a9d5e5 50%, #388da6 51%, #0b4f8a); }
+.route-art-1 { background: linear-gradient(155deg, #e0edf7 0%, #bbd8e8 50%, #3384a1 51%, #08345b); }
+.route-art-2 { background: linear-gradient(155deg, #e5f0f9 0%, #adcde2 50%, #397e9e 51%, #0b4f8a); }
+.island { background: #28556a; }
+.island-two { background: #5b8798; }
+.home-advisories { margin-top: 60px; background: #fff; padding: 42px 24px; }
+.weather-note { max-width: 1120px; margin: 0 auto; background: #fbf0f2; border-color: #ff3157; color: #17253a; }
+.weather-note h2, .weather-note p { color: #17253a; }
+.weather-note > span { color: #d62c4e; }
+@media (max-width: 700px) {
+ main:has(.travel-home) { padding-top: 32px; }
+ .travel-hero { margin-top: 0; margin-bottom: 32px; }
+ .travel-home > .trip-search { width: calc(100% - 32px); }
+ .popular-routes { padding: 28px 16px 36px; margin-top: 36px; }
+ .home-advisories { padding: 28px 16px; margin-top: 36px; }
+ .card form { padding: 20px; }
+ header nav a { padding: 8px 10px; }
+}
+@media print {
+ :root { color-scheme: light; --text: #17253a; --muted: #43546c; --teal: #0b4f8a; --cyan: #0b4f8a; }
+ body, main, .passenger-panel, .card, .boarding-modal { background: #fff !important; color: #17253a !important; }
+ .fare-breakdown, .voyage-summary { background: #f2f5f8; color: #17253a; }
+}
