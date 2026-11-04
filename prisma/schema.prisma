@@ -1,0 +1,422 @@
+generator client {
+  provider   = "prisma-client-js"
+  engineType = "client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  PASSENGER
+  COUNTER_STAFF
+  GATE_STAFF
+  PORT_ADMIN
+}
+
+enum SailingStatus {
+  SCHEDULED
+  BOARDING
+  DEPARTED
+  DELAYED
+  CANCELLED
+  ARRIVED
+}
+
+enum BookingStatus {
+  DRAFT
+  SEAT_HELD
+  PAYMENT_PENDING
+  PAID
+  PAYMENT_FAILED
+  HOLD_EXPIRED
+  COUNTER_PENDING
+  EXPIRED_UNPAID
+  TICKET_ISSUED
+  COMPLETED
+  REFUND_REQUESTED
+  REFUND_PROCESSING
+  REFUNDED
+  CANCELLED
+}
+
+enum SeatState {
+  AVAILABLE
+  HELD
+  PENDING_PAYMENT
+  SOLD
+  BLOCKED
+}
+
+enum PassengerCategory {
+  REGULAR_ADULT
+  STUDENT
+  SENIOR
+  PWD
+  CHILD
+  INFANT
+}
+
+enum PaymentMethod {
+  GCASH
+  MAYA
+  CARD
+  COUNTER
+}
+
+enum AttemptStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+}
+
+enum TicketStatus {
+  TICKET_ISSUED
+  BOARDED
+  REFUNDED
+  CANCELLED
+}
+
+enum RefundStatus {
+  REQUESTED
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+model User {
+  id            String             @id @default(uuid()) @db.Uuid
+  email         String             @unique
+  fullName      String
+  mobile        String
+  passwordHash  String
+  role          Role               @default(PASSENGER)
+  verifiedAt    DateTime?
+  consentAt     DateTime
+  failedLogins  Int                @default(0)
+  lockedUntil   DateTime?
+  createdAt     DateTime           @default(now())
+  oauthAccounts OAuthAccount[]
+  sessions      Session[]
+  verification  EmailVerification?
+  resets        PasswordReset[]
+  bookings      Booking[]
+  notifications Notification[]
+}
+
+model Session {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @db.Uuid
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId, expiresAt])
+}
+
+model EmailVerification {
+  userId    String   @id @db.Uuid
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  codeHash  String
+  expiresAt DateTime
+  attempts  Int      @default(0)
+  sentAt    DateTime @default(now())
+}
+
+model PasswordReset {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @db.Uuid
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+
+  @@index([userId])
+}
+
+model Port {
+  id              String  @id
+  name            String
+  northernPalawan Boolean @default(false)
+  origins         Route[] @relation("origin")
+  destinations    Route[] @relation("destination")
+}
+
+model Route {
+  id              String    @id
+  originId        String
+  destinationId   String
+  origin          Port      @relation("origin", fields: [originId], references: [id])
+  destination     Port      @relation("destination", fields: [destinationId], references: [id])
+  durationMinutes Int
+  sailings        Sailing[]
+
+  @@unique([originId, destinationId])
+}
+
+model Vessel {
+  id           String             @id
+  name         String
+  operator     String
+  registration String?
+  layouts      VesselSeatLayout[]
+  sailings     Sailing[]
+}
+
+model VesselSeatLayout {
+  id        String @id
+  vesselId  String
+  vessel    Vessel @relation(fields: [vesselId], references: [id])
+  className String
+  deck      Int
+  seats     Seat[]
+
+  @@unique([vesselId, className, deck])
+}
+
+model Seat {
+  id        String           @id
+  layoutId  String
+  layout    VesselSeatLayout @relation(fields: [layoutId], references: [id])
+  label     String
+  row       Int
+  column    Int
+  inventory SailingSeat[]
+  holds     SeatHold[]
+
+  @@unique([layoutId, label])
+}
+
+model Sailing {
+  id        String        @id @default(uuid()) @db.Uuid
+  vesselId  String
+  vessel    Vessel        @relation(fields: [vesselId], references: [id])
+  routeId   String
+  route     Route         @relation(fields: [routeId], references: [id])
+  departure DateTime
+  arrival   DateTime
+  status    SailingStatus @default(SCHEDULED)
+  published Boolean       @default(false)
+  manifestClearedAt DateTime?
+  manifestClearedBy String?
+  gate      String
+  terminal  String
+  fares     Fare[]
+  inventory SailingSeat[]
+  bookings  Booking[]
+  holds     SeatHold[]
+
+  @@index([routeId, departure, published])
+}
+
+model SailingSeat {
+  sailingId String    @db.Uuid
+  seatId    String
+  sailing   Sailing   @relation(fields: [sailingId], references: [id])
+  seat      Seat      @relation(fields: [seatId], references: [id])
+  state     SeatState @default(AVAILABLE)
+  version   Int       @default(0)
+
+  @@id([sailingId, seatId])
+  @@index([sailingId, state])
+}
+
+model Fare {
+  id                  String            @id @default(uuid()) @db.Uuid
+  sailingId           String            @db.Uuid
+  sailing             Sailing           @relation(fields: [sailingId], references: [id])
+  className           String
+  category            PassengerCategory
+  baseCentavos        Int
+  terminalFeeCentavos Int
+  currency            String            @default("PHP")
+
+  @@unique([sailingId, className, category])
+}
+
+model Booking {
+  id                  String             @id @default(uuid()) @db.Uuid
+  sequence            Int                @unique @default(autoincrement())
+  reference           String             @unique @default(dbgenerated("'MP-' || lpad(nextval('booking_reference_seq')::text, 5, '0')"))
+  userId              String             @db.Uuid
+  user                User               @relation(fields: [userId], references: [id])
+  sailingId           String             @db.Uuid
+  sailing             Sailing            @relation(fields: [sailingId], references: [id])
+  status              BookingStatus      @default(DRAFT)
+  totalCentavos       Int
+  terminalFeeCentavos Int
+  holdIp String?
+  paymentStartedAt DateTime?
+  paymentHoldExpiresAt DateTime?
+  holdExpiresAt       DateTime?
+  extensionUsed       Boolean            @default(false)
+  counterDeadline     DateTime?
+  createdAt           DateTime           @default(now())
+  passengers          BookingPassenger[]
+  holds               SeatHold[]
+  attempts            PaymentAttempt[]
+  payments            Payment[]
+  tickets             Ticket[]
+  refunds             Refund[]
+
+  @@index([userId, status])
+}
+
+model BookingPassenger {
+  id                String            @id @default(uuid()) @db.Uuid
+  bookingId         String            @db.Uuid
+  booking           Booking           @relation(fields: [bookingId], references: [id])
+  // Sensitive passenger details are encrypted by the application before persistence.
+  redactedAt DateTime?
+  position Int @default(0)
+  seatId String?
+  detailsCiphertext String
+  category          PassengerCategory
+  age               Int
+  gender            String
+  tickets           Ticket[]
+}
+
+model SeatHold {
+  id         String    @id @default(uuid()) @db.Uuid
+  sailingId  String    @db.Uuid
+  sailing    Sailing   @relation(fields: [sailingId], references: [id])
+  seatId     String
+  seat       Seat      @relation(fields: [seatId], references: [id])
+  bookingId  String    @db.Uuid
+  booking    Booking   @relation(fields: [bookingId], references: [id])
+  expiresAt  DateTime
+  releasedAt DateTime?
+  createdAt  DateTime  @default(now())
+
+  @@index([expiresAt, releasedAt])
+}
+
+model PaymentAttempt {
+  id                String        @id @default(uuid()) @db.Uuid
+  bookingId         String        @db.Uuid
+  booking           Booking       @relation(fields: [bookingId], references: [id])
+  reference         String        @unique
+  attemptNumber     Int
+  idempotencyKey    String        @unique
+  method            PaymentMethod
+  status            AttemptStatus @default(PENDING)
+  providerReference String?       @unique
+  providerState String @default("PENDING")
+  finalizedAt DateTime?
+  amountCentavos    Int
+  createdAt         DateTime      @default(now())
+  payments          Payment[]
+
+  @@unique([bookingId, attemptNumber])
+  @@index([status, createdAt])
+}
+
+model Payment {
+  id             String         @id @default(uuid()) @db.Uuid
+  bookingId      String         @db.Uuid
+  booking        Booking        @relation(fields: [bookingId], references: [id])
+  attemptId      String         @unique @db.Uuid
+  attempt        PaymentAttempt @relation(fields: [attemptId], references: [id])
+  amountCentavos Int
+  method         PaymentMethod
+  paidAt         DateTime       @default(now())
+  refunds        Refund[]
+}
+
+model Ticket {
+  id          String           @id @default(uuid()) @db.Uuid
+  bookingId   String           @db.Uuid
+  booking     Booking          @relation(fields: [bookingId], references: [id])
+  passengerId String           @unique @db.Uuid
+  passenger   BookingPassenger @relation(fields: [passengerId], references: [id])
+  seatLabel   String
+  status      TicketStatus     @default(TICKET_ISSUED)
+  version     Int              @default(1)
+  issuedAt    DateTime         @default(now())
+  scan        BoardingScan?
+}
+
+model BoardingScan {
+  id        String   @id @default(uuid()) @db.Uuid
+  ticketId  String   @unique @db.Uuid
+  ticket    Ticket   @relation(fields: [ticketId], references: [id])
+  staffId   String   @db.Uuid
+  gate      String
+  scannedAt DateTime @default(now())
+}
+
+model Refund {
+  id             String       @id @default(uuid()) @db.Uuid
+  bookingId      String       @db.Uuid
+  booking        Booking      @relation(fields: [bookingId], references: [id])
+  paymentId      String       @db.Uuid
+  payment        Payment      @relation(fields: [paymentId], references: [id])
+  reference      String       @unique
+  refundNumber   Int
+  amountCentavos Int
+  reason         String
+  status         RefundStatus @default(REQUESTED)
+  requestedAt    DateTime     @default(now())
+  processingAt   DateTime?
+  completedAt    DateTime?
+
+  @@unique([bookingId, refundNumber])
+}
+
+model RefundPolicy {
+  id                   String  @id
+  reason               String
+  minMinutesBefore     Int
+  maxMinutesBefore     Int?
+  deductionBasisPoints Int
+  refundable           Boolean @default(true)
+}
+
+model Notification {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @db.Uuid
+  user      User      @relation(fields: [userId], references: [id])
+  kind      String
+  payload   Json
+  createdAt DateTime  @default(now())
+  readAt    DateTime?
+  deliveredAt DateTime?
+  attempts Int @default(0)
+  nextAttemptAt DateTime?
+
+  @@index([userId, createdAt])
+}
+
+model AuditLog {
+  id        String   @id @default(uuid()) @db.Uuid
+  actorId   String?  @db.Uuid
+  action    String
+  entityId  String
+  metadata  Json
+  createdAt DateTime @default(now())
+
+  @@index([entityId, createdAt])
+}
+
+model WebhookEvent {
+  id          String    @id @default(uuid()) @db.Uuid
+  provider    String
+  eventId     String
+  receivedAt  DateTime  @default(now())
+  processedAt DateTime?
+
+  @@unique([provider, eventId])
+}
+
+model OAuthAccount {
+ id String @id @default(uuid()) @db.Uuid
+ provider String
+ subject String
+ userId String @db.Uuid
+ user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+ createdAt DateTime @default(now())
+ @@unique([provider, subject])
+}

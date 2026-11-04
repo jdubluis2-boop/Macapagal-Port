@@ -1,0 +1,1 @@
+export default function Page() { return <section className="card"><h1>Terms</h1><p>Development preview. Do not use this service for real bookings or payments. Published passenger terms and operator policies must be approved before launch.</p></section>; }

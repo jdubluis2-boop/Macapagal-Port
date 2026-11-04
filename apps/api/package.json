@@ -1,0 +1,34 @@
+{
+  "name": "@macapagal/api",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc --noEmit",
+    "test": "node --import tsx --test test/validation.test.ts test/*.unit.test.ts",
+    "test:integration": "node --import tsx --test test/*.integration.test.ts",
+    "test:sailings": "node --import tsx --test test/sailings.integration.test.ts"
+  },
+  "dependencies": {
+    "@fastify/cookie": "^11.0.0",
+    "@fastify/cors": "^11.0.0",
+    "@fastify/rate-limit": "^10.3.0",
+    "argon2": "^0.44.0",
+    "bullmq": "^6.5.4",
+    "dotenv": "^17.2.0",
+    "fastify": "^5.6.0",
+    "ioredis": "^5.8.0",
+    "jose": "^6.1.0",
+    "nodemailer": "^7.0.0",
+    "pdfkit": "^0.20.2",
+    "qrcode": "^1.5.4",
+    "socket.io": "^4.8.4",
+    "zod": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/nodemailer": "^7.0.0",
+    "@types/pdfkit": "^0.17.7",
+    "@types/qrcode": "^1.5.6",
+    "socket.io-client": "^4.8.4"
+  }
+}

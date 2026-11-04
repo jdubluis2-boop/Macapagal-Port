@@ -1,0 +1,6 @@
+import type { Metadata } from 'next';
+import Link from 'next/link';
+import './globals.css';
+import PassengerNav from '../components/PassengerNav';
+export const metadata: Metadata = { title: 'Macapagal Port | Ferry schedules & passenger accounts', description: 'Macapagal Port Passenger Ticketing System, Surigao City' };
+export default function Layout({ children }: { children: React.ReactNode }) { return <html lang="en"><body><header><Link className="brand" href="/">⚓ MACAPAGAL PORT<small>PASSENGER TICKETING SYSTEM</small></Link><PassengerNav/></header><aside className="advisory"><strong>TRAVEL ADVISORY</strong> Arrive at least 2 hours before departure. Bring a valid government-issued ID.</aside><main>{children}</main><footer><div><strong>MACAPAGAL PORT</strong><p>Passenger travel · Surigao City, Philippines</p><p>Helpdesk daily, 5:00 AM–11:00 PM</p></div><div><strong>Before you travel</strong><p>20 kg baggage allowance · Maximum 10 passengers per booking</p><p>Northern Palawan: manifest clearing at least 4 hours before departure.</p></div><div><strong>Accepted payment options</strong><p>GCash · Maya · Visa/Mastercard · Terminal Counter</p><p>Official hotline pending confirmation.</p></div></footer></body></html>; }
